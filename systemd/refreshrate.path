@@ -1,0 +1,8 @@
+[Unit]
+Description=Watch AC adapter status
+
+[Path] 
+DirectoryNotEmpty=/sys/class/power_supply/ADP0
+
+[Install]
+WantedBy=default.target
