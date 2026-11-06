@@ -12,10 +12,17 @@ This script was tested on a **Asus TUF14** laptop laptop with **Fedora 42** with
 
 Lower KDE versions, other laptops or similar scripts might get some errors or incompatibilities, please report any issue.
 
+## How it works
+
+A systemd user service runs `set-refresh.sh --watch`, which listens for udev
+`power_supply` events and applies the AC or battery mode whenever the power
+state changes. The AC adapter is detected automatically.
+
 ## Requirements
 
 - `kscreen-doctor` (part of KDE Plasma)  
 - `systemd --user` (default on Fedora)
+- `udevadm` (part of systemd)
 
 ## Installation
 
@@ -41,7 +48,7 @@ Lower KDE versions, other laptops or similar scripts might get some errors or in
 4. Reload and enable:
    ```bash
    systemctl --user daemon-reload
-   systemctl --user enable --now refreshrate.path
+   systemctl --user enable --now refreshrate.service
    ```
 
 5. Test:
@@ -56,23 +63,19 @@ Lower KDE versions, other laptops or similar scripts might get some errors or in
   ```bash
   kscreen-doctor -o
   ```
-- Check the power supply device name:
-  ```bash
-  ls /sys/class/power_supply
-  ```
-  and update `refreshrate.path` if it’s not `ADP0`.
+- The AC adapter is autodetected (any `Mains` power supply), no configuration needed.
 
   ---
   
-  Default values (`OUTPUT="eDP-1"`, `MODE_AC="1"`, `MODE_BAT="2"`, power supply `ADP0`) are just examples.  
+  Default values (`OUTPUT="eDP-1"`, `MODE_AC="1"`, `MODE_BAT="2"`) are just examples.  
   
-  Run `kscreen-doctor -o` and `ls /sys/class/power_supply` to get your actual values.
+  Run `kscreen-doctor -o` to get your actual values.
 
 
 ## Uninstallation
 
 ```bash
-systemctl --user disable --now refreshrate.path
+systemctl --user disable --now refreshrate.service
 rm ~/.local/bin/set-refresh.sh
 rm ~/.config/systemd/user/refreshrate.*
 ```
