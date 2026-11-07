@@ -1,8 +1,14 @@
 [Unit]
 Description=Set refresh rate on AC/Battery change
+After=graphical-session.target
+PartOf=graphical-session.target
+ConditionEnvironment=WAYLAND_DISPLAY
 
 [Service]
-Type=oneshot
-ExecStart=%h/.local/bin/set-refresh.sh
-Environment=DISPLAY=:0
-Environment=XDG_RUNTIME_DIR=%t
+Type=simple
+ExecStart=%h/.local/bin/set-refresh.sh --watch
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=graphical-session.target
